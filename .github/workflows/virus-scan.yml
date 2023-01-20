@@ -30,12 +30,7 @@ jobs:
     - name: "Build"
       run: make
       
-    - name: "Download UVScan and install"
-      run: |
-        wget https://silvsdl01.ir.intel.com/wp-content/uploads/2021/11/cls-l64-700-l.tar.gz -o cls-l64-700-l.tar.gz
-        tar -xvf cls-l64-700-l.tar.gz
-        cd cls-l64-700-l
-        ./install-uvscan
-        cd /usr/local/uvscan
-        wget http://update.nai.com/Products/CommonUpdater/avvdat-10595.zip -o avvdat-10595.zip
-        unzip avvdat-10595.zip
+    - name: "Git AV Scan"
+      uses: djdefi/gitavscan@main
+      with:
+        full: '--full'
