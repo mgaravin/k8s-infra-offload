@@ -2,7 +2,9 @@ name: Virus Scan
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - virus_scan
 
   pull_request:
     branches: [ main ]
