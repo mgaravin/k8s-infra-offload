@@ -1,0 +1,39 @@
+name: Virus Scan
+
+on:
+  push:
+    branches: [ main ]
+
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  # if workflow for PR or push is already running stop it, and start new one
+  group: virus-scan-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  VirusScan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: "Set up Go"
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19.4
+
+    - name: "Build"
+      run: make
+      
+    - name: "Download UVScan and install"
+      run: |
+        wget https://silvsdl01.ir.intel.com/wp-content/uploads/2021/11/cls-l64-700-l.tar.gz -o cls-l64-700-l.tar.gz
+        tar -xvf cls-l64-700-l.tar.gz
+        cd cls-l64-700-l
+        ./install-uvscan
+        cd /usr/local/uvscan
+        wget http://update.nai.com/Products/CommonUpdater/avvdat-10595.zip -o avvdat-10595.zip
+        unzip avvdat-10595.zip
