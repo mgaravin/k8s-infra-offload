@@ -2,7 +2,9 @@ name: Build and Test
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - trivy
 
   pull_request:
     branches: [ main ]
@@ -25,7 +27,7 @@ jobs:
     - name: "Set up Go"
       uses: actions/setup-go@v4
       with:
-        go-version: 1.20.5
+        go-version: 1.20.7
 
     - name: "Build"
       run: make dpdk
@@ -67,6 +69,22 @@ jobs:
         with:
           dockerfile: 'images/Dockerfile.agent'
           verbose: true
+          
+  trivy_scanning:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+
+      - name: Run Trivy vulnerability scanner in repo mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL'
 
   DockerBuildAndPush:
     needs: [BuildAndTest, lint_dockerfiles]
@@ -81,7 +99,7 @@ jobs:
     - name: "Set up Go"
       uses: actions/setup-go@v4
       with:
-        go-version: 1.20.5
+        go-version: 1.20.7
 
     - name: "Create k8s Kind Cluster"
       uses: helm/kind-action@v1.5.0
