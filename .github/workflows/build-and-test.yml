@@ -42,6 +42,16 @@ jobs:
       run: |
         #make test
         echo "skipping unit test"
+        
+    - name: Run Trivy vulnerability scanner in repo mode
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        ignore-unfixed: true
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+        list-all-pkgs: true    
 
   lint_dockerfiles:
     timeout-minutes: 15
