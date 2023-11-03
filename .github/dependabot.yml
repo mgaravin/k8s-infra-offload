@@ -9,3 +9,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+  - package-ecosystem: "gomod"
+    directory: "/"
+    target-branch: "dependabot_testing"
+    schedule:
+      interval: "daily"     
